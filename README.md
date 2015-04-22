@@ -14,37 +14,38 @@ Finished:
 
 //prototypes
 void move_foward(int line_count);
-void sense_object(int line_count, int sense);
+void sense_object(void);
 
 
 task main()
 {
 	int line_count = 0;
-	int sense;
 	
-	sense_object(line_count,sense);
+	sense_object();
+
 	
 }//End main()
 
+
+/*moves the robot foward, counts the line 
+and if its a black cell stops moves back 
+and goes aroun the cell
+*/
 void move_foward (int line_count)
 {
-	while (SensorValue(lightSensor) > 25)
+	while (SensorValue(lightSensor) > 35)
 	{
 		
 		motor[motorB] = 50;
 		motor[motorC] = 50;
 		
-		nxtDisplayBigStringAt(25, 25, "%d", line_count);
-	  nxtDisplayCenteredTextLine(1, "The Line Count");
-	  nxtDisplayCenteredTextLine(2, "is");
-	  
-		if (SensorValue(lightSensor) < 45)
+		if (SensorValue(lightSensor) < 35)
 		{
-			wait1Msec(50);
+			wait1Msec(100);
 			
 			line_count = line_count + 1;
 			
-			if (SensorValue(lightSensor) < 45)//stop at black cell
+			if (SensorValue(lightSensor) < 35)//stop at black cell
 			{
 				motor[motorB] = 0;
 				motor[motorC] = 0;
@@ -59,38 +60,31 @@ void move_foward (int line_count)
 	
 }//End function move_foward
 
-void sense_object (int line_count, int sense)
+void sense_object ()
 {
 	
-	motor[motorB] = 50;
-	motor[motorC] = 50;
-	
-	line_count = line_count + 1;
 	
 	nMotorEncoder[motorB] = 0;
 	nMotorEncoder[motorC] = 0;
 	
-	while(nMotorEncoder[motorC] < 360)//turn left
+	while(nMotorEncoder[motorC] < 360)//turn right
 	{
 		motor[motorC] = 50;
 		motor[motorB] = 0;
 	}//End while()
-			
-	wait1Msec(50);
-			
-	if(SensorValue(sonarSensor) < 45)//if object is found move to
-	{
-		motor[motorB] = 50;
-		motor[motorC] = 50;
-		
-		if(SensorValue(sonarSensor) > 5)//object found stop
-		{
-			motor[motorB] = 0;
-			motor[motorC] = 0;
-		}
-
-	}
-			
 	
+	motor[motorC]	=	0;
+	
+	wait1Msec(50);
+	
+	if(SensorValue(sonarSensor) < 60)
+	{
+		while(SensorValue(sonarSensor) > 18)//if object is found move to
+		{
+			motor[motorB] = 50;
+			motor[motorC] = 50;
+				
+		}
 			
-}//End Function sense_object()
+	}
+}	
